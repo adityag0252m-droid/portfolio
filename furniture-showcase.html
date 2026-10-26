@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Furniture Showcase</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#faf6f0;--card:#fff;--tx:#2b2118;--mut:#7a6a5a;--ac:#8a4b1f;--ac2:#f1e4d3;--bd:#e6dccd}
+:root:not([data-theme="light"]){}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1713;--card:#272019;--tx:#f2e9de;--mut:#b3a392;--ac:#e0a066;--ac2:#3a2e22;--bd:#3d3328}}
+:root[data-theme="dark"]{--bg:#1c1713;--card:#272019;--tx:#f2e9de;--mut:#b3a392;--ac:#e0a066;--ac2:#3a2e22;--bd:#3d3328}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 Georgia,'Times New Roman',serif}
+h1,h2,h3,button,input,select,textarea,.sans{font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
+header{padding:28px 20px 18px;text-align:center;border-bottom:1px solid var(--bd)}
+header h1{margin:0;font-family:Georgia,serif;font-size:clamp(26px,5vw,40px)}
+header p{margin:6px 0 0;color:var(--mut)}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+input,select,textarea{font-size:15px;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);width:100%}
+.bar input{flex:1;min-width:160px}.bar select{width:auto}
+button{cursor:pointer;border:0;border-radius:10px;padding:10px 16px;font-size:15px;background:var(--ac);color:#fff}
+button.sec{background:var(--ac2);color:var(--tx)}button.del{background:#b3261e}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .15s}
+.card:hover{transform:translateY(-3px)}
+.ph{aspect-ratio:4/3;background:var(--ac2);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:14px}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.cb{padding:12px 14px}.cb h3{margin:0 0 2px;font-size:17px}.cat{color:var(--mut);font-size:13px}
+.price{color:var(--ac);font-weight:700;font-size:18px;margin-top:6px}
+.tag{display:inline-block;background:var(--ac2);border-radius:20px;padding:3px 10px;font-size:13px;margin:3px 4px 0 0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:20px;z-index:9}
+.box{background:var(--card);border-radius:16px;max-width:760px;width:100%;padding:20px;position:relative}
+.x{position:absolute;right:12px;top:12px;background:var(--ac2);color:var(--tx);padding:6px 12px}
+.main{aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:var(--ac2);margin-bottom:8px}.main img{width:100%;height:100%;object-fit:contain}
+.th{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px}.th img{width:64px;height:64px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent}.th img.on{border-color:var(--ac)}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:140px}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+.ad{background:var(--ac2);padding:10px 20px;text-align:center;font-size:14px;font-family:system-ui,sans-serif}
+footer{text-align:center;color:var(--mut);padding:24px;font-size:14px}
+.imgs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.imgs div{position:relative}.imgs img{width:70px;height:70px;object-fit:cover;border-radius:8px}
+.imgs b{position:absolute;top:-6px;right:-6px;background:#b3261e;color:#fff;border-radius:50%;width:20px;height:20px;text-align:center;font-size:13px;line-height:20px;cursor:pointer}
+ul{padding-left:20px;margin:6px 0}
+</style></head><body>
+<div id="app"></div>
+<script id="data" type="application/json">{"shop":{"name":"My Furniture Shop","tagline":"Handcrafted furniture for every home","phone":"","address":""},"products":[{"id":"p1","name":"Sheesham Wood Sofa (Sample)","cat":"Sofas","price":"28,500","desc":"Comfortable 3-seater sofa with solid wood frame and soft cushions. Replace this sample with your own product.","features":["Solid sheesham wood frame","High-density foam cushions","1 year warranty"],"custom":["Fabric colour of your choice","Size: 2 / 3 / 4 seater","Wood polish shade"],"imgs":[]},{"id":"p2","name":"6-Seater Dining Table (Sample)","cat":"Dining","price":"34,000","desc":"Elegant dining set. Edit or delete this sample from Owner mode.","features":["Includes 6 chairs","Scratch resistant finish"],"custom":["Table top size","Chair cushion colour"],"imgs":[]}]}</script>
+<script>
+const S=JSON.parse(document.getElementById('data').textContent);
+const $=(s,r=document)=>r.querySelector(s);
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const lines=t=>t.split('\n').map(x=>x.trim()).filter(Boolean);
+let art=null,assets=null,owner=false,q='',cat='All',openId=null,edit=null,shopEdit=false,busy='';
+(async()=>{try{const u=await claude.use('user');owner=!!(u&&u.canEdit());if(owner){art=await claude.use('artifact');assets=await claude.use('assets');owner=!!art}}catch(e){owner=false}render()})();
+async function save(){
+  if(!art)return;busy='Saving…';render();
+  try{
+    const c=document.documentElement.cloneNode(true);
+    $('#app',c).innerHTML='';
+    $('#data',c).textContent=JSON.stringify(S).replace(/</g,'\\u003c');
+    await art.publish('<!DOCTYPE html>\n'+c.outerHTML);
+  }catch(e){busy='';alert('Could not save: '+(e.message||e.code||e));render()}
+}
+function render(){
+  const cats=['All',...new Set(S.products.map(p=>p.cat).filter(Boolean))];
+  const list=S.products.filter(p=>(cat==='All'||p.cat===cat)&&(p.name+' '+p.desc+' '+p.cat).toLowerCase().includes(q.toLowerCase()));
+  const sh=S.shop;
+  $('#app').innerHTML=`
+  ${owner?`<div class="ad">Owner mode — you can add and edit products. <button class="sec" onclick="newP()">+ Add product</button> <button class="sec" onclick="shopEdit=true;render()">Shop details</button> ${busy}</div>`:''}
+  <header><h1>${esc(sh.name)}</h1><p>${esc(sh.tagline)}</p></header>
+  <div class="wrap"><div class="bar">
+    <input id="q" placeholder="Search furniture…" value="${esc(q)}">
+    <select id="cat">${cats.map(c=>`<option ${c===cat?'selected':''}>${esc(c)}</option>`).join('')}</select></div>
+    ${list.length?`<div class="grid">${list.map(p=>`<div class="card" onclick="openId='${p.id}';render()">
+      <div class="ph">${p.imgs[0]?`<img src="${esc(p.imgs[0])}" alt="${esc(p.name)}" loading="lazy">`:'No photo yet'}</div>
+      <div class="cb"><h3>${esc(p.name)}</h3><div class="cat">${esc(p.cat)}</div><div class="price">${p.price?'₹ '+esc(p.price):'Ask for price'}</div></div></div>`).join('')}</div>`
+    :`<p style="text-align:center;color:var(--mut)">No products found.${owner?' Click “+ Add product” above.':''}</p>`}
+  </div>
+  <footer>${sh.phone?`<p class="sans"><a style="color:var(--ac)" href="tel:${esc(sh.phone)}">📞 ${esc(sh.phone)}</a></p>`:''}${sh.address?`<p>${esc(sh.address)}</p>`:''}<p>Visit our shop to see and buy. Prices may change.</p></footer>
+  ${openId?viewModal():''}${edit?editModal():''}${shopEdit?shopModal():''}`;
+  $('#q').oninput=e=>{q=e.target.value;const p=e.target.selectionStart;render();const n=$('#q');n.focus();n.setSelectionRange(p,p)};
+  $('#cat').onchange=e=>{cat=e.target.value;render()};
+}
+let big=0;
+function viewModal(){
+  const p=S.products.find(x=>x.id===openId);if(!p){openId=null;return''}
+  const im=p.imgs;if(big>=im.length)big=0;
+  return `<div class="modal" onclick="if(event.target===this){openId=null;big=0;render()}"><div class="box">
+  <button class="x" onclick="openId=null;big=0;render()">Close</button>
+  <h2 style="margin:0 60px 4px 0">${esc(p.name)}</h2><div class="cat">${esc(p.cat)}</div>
+  <div class="main" style="margin-top:12px">${im[big]?`<img src="${esc(im[big])}" alt="">`:'<div class="ph" style="height:100%">No photo yet</div>'}</div>
+  ${im.length>1?`<div class="th">${im.map((u,i)=>`<img class="${i===big?'on':''}" src="${esc(u)}" onclick="big=${i};render()">`).join('')}</div>`:''}
+  <div class="price" style="font-size:24px">${p.price?'₹ '+esc(p.price):'Ask for price'}</div>
+  <p>${esc(p.desc).replace(/\n/g,'<br>')}</p>
+  ${p.features.length?`<h3>Features</h3><ul>${p.features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`:''}
+  ${p.custom.length?`<h3>Customization available</h3>${p.custom.map(f=>`<span class="tag">${esc(f)}</span>`).join('')}`:''}
+  ${S.shop.phone?`<p class="sans"><a style="color:var(--ac)" href="tel:${esc(S.shop.phone)}">📞 Call to enquire: ${esc(S.shop.phone)}</a></p>`:''}
+  ${owner?`<div class="row" style="margin-top:14px"><button onclick="editP('${p.id}')">Edit</button><button class="del" onclick="delP('${p.id}')">Delete</button></div>`:''}
+  </div></div>`;
+}
+function newP(){edit={id:'p'+Date.now(),name:'',cat:'',price:'',desc:'',features:[],custom:[],imgs:[],isNew:true};render()}
+function editP(id){openId=null;edit=JSON.parse(JSON.stringify(S.products.find(p=>p.id===id)));render()}
+function delP(id){if(!confirm('Delete this product?'))return;S.products=S.products.filter(p=>p.id!==id);openId=null;save()}
+function editModal(){const p=edit;return `<div class="modal"><div class="box">
+  <h2 style="margin-top:0">${p.isNew?'Add product':'Edit product'}</h2>
+  <label>Product name</label><input id="f_name" value="${esc(p.name)}">
+  <div class="row"><div><label>Category (e.g. Sofas, Beds)</label><input id="f_cat" value="${esc(p.cat)}"></div>
+  <div><label>Price (₹)</label><input id="f_price" value="${esc(p.price)}" placeholder="e.g. 12,500"></div></div>
+  <label>Description</label><textarea id="f_desc" rows="3">${esc(p.desc)}</textarea>
+  <label>Features (one per line)</label><textarea id="f_features" rows="3">${esc(p.features.join('\n'))}</textarea>
+  <label>Customization options (one per line)</label><textarea id="f_custom" rows="3" placeholder="Colour of your choice&#10;Custom size">${esc(p.custom.join('\n'))}</textarea>
+  <label>Photos</label>
+  ${assets?`<input type="file" id="f_file" accept="image/*" multiple onchange="upl(this)"><div id="ust" class="cat"></div>`:'<p class="cat">Photo upload not available.</p>'}
+  <div class="imgs">${p.imgs.map((u,i)=>`<div><img src="${esc(u)}"><b onclick="rmImg(${i})">×</b></div>`).join('')}</div>
+  <div class="row" style="margin-top:18px"><button onclick="saveP()">Save product</button><button class="sec" onclick="edit=null;render()">Cancel</button></div>
+  </div></div>`}
+function grab(){const p=edit;p.name=$('#f_name').value.trim();p.cat=$('#f_cat').value.trim();p.price=$('#f_price').value.trim();p.desc=$('#f_desc').value.trim();p.features=lines($('#f_features').value);p.custom=lines($('#f_custom').value)}
+async function upl(inp){grab();const st=$('#ust');for(const f of inp.files){st.textContent='Uploading '+f.name+'…';try{const r=await assets.upload(f);edit.imgs.push(r.url)}catch(e){alert('Upload failed: '+(e.message||e.code))}}render()}
+function rmImg(i){grab();edit.imgs.splice(i,1);render()}
+function saveP(){grab();if(!edit.name){alert('Please enter a product name');return}
+  const p={...edit};delete p.isNew;const i=S.products.findIndex(x=>x.id===p.id);
+  if(i>=0)S.products[i]=p;else S.products.unshift(p);edit=null;save()}
+function shopModal(){const s=S.shop;return `<div class="modal"><div class="box"><h2 style="margin-top:0">Shop details</h2>
+  <label>Shop name</label><input id="s_name" value="${esc(s.name)}">
+  <label>Tagline</label><input id="s_tag" value="${esc(s.tagline)}">
+  <label>Phone / WhatsApp number</label><input id="s_phone" value="${esc(s.phone)}">
+  <label>Address</label><input id="s_addr" value="${esc(s.address)}">
+  <div class="row" style="margin-top:18px"><button onclick="saveS()">Save</button><button class="sec" onclick="shopEdit=false;render()">Cancel</button></div></div></div>`}
+function saveS(){S.shop={name:$('#s_name').value.trim()||'My Furniture Shop',tagline:$('#s_tag').value.trim(),phone:$('#s_phone').value.trim(),address:$('#s_addr').value.trim()};shopEdit=false;save()}
+</script></body></html>
